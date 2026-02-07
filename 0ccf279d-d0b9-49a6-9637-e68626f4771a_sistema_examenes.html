@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📝 Sistema de Inscripción a Exámenes - Instituto Nuestra Señora de las Mercedes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .logo-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .access-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 20px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-admin {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+        }
+
+        .btn-student {
+            background: linear-gradient(135deg, #1e90ff 0%, #4834d4 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .login-panel, .admin-panel, .student-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+            display: none;
+        }
+
+        .login-panel.active, .admin-panel.active, .student-panel.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .admin-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .menu-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .menu-item i {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
+        }
+
+        .alert {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #856404;
+        }
+
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .info {
+            background: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .config-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .contact-icon {
+            font-size: 1.8em;
+            color: #667eea;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .security-note {
+            background: #f8d7da;
+            border: 2px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #721c24;
+            font-weight: 500;
+        }
+
+        /* Dashboard Stats */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 5px;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .btn-approve {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-edit {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-delete {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-add {
+            background: #28a745;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .btn-add:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .action-btn:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+
+        /* Search and Filter */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-bar input, .search-bar select {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .close-modal:hover {
+            color: #dc3545;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            border-bottom: 3px solid #667eea;
+            color: #667eea;
+        }
+
+        /* Teacher and Classroom Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .teacher-card, .classroom-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .teacher-card:hover, .classroom-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .teacher-card h4, .classroom-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .teacher-card p, .classroom-card p {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .teacher-card .teacher-actions, .classroom-card .classroom-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: flex-end;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-menu {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-badge">🎓 Nivel Superior</div>
+            <h1>📝 Sistema de Inscripción a Exámenes</h1>
+            <p class="subtitle">Instituto Nuestra Señora de las Mercedes - Unquillo, Córdoba</p>
+            <p class="subtitle">Profesorados de Educación Inicial y Primaria</p>
+        </header>
+
+        <!-- Botones de acceso principales -->
+        <div class="access-buttons">
+            <button class="btn btn-admin" onclick="showLogin('admin')">
+                👤 Acceso Administradores
+            </button>
+            <button class="btn btn-student" onclick="showPanel('student')">
+                📚 Inscripción Estudiantes
+            </button>
+            <button class="btn btn-student" onclick="showPanel('calendar')">
+                📅 Calendario de Exámenes
+            </button>
+        </div>
+
+        <!-- Panel de Login Administrador (Oculto inicialmente) -->
+        <div id="adminLogin" class="login-panel">
+            <button class="back-btn" onclick="hideAllPanels()">← Volver</button>
+            <h2>🔐 Acceso Restringido - Administradores</h2>
+            
+            <div class="security-note">
+                ⚠️ <strong>IMPORTANTE:</strong> Las credenciales son confidenciales. 
+                Para obtener acceso, contacte a Secretaría Académica.
+            </div>
+            
+            <div class="form-group">
+                <label for="adminUser">Usuario:</label>
+                <input type="text" id="adminUser" placeholder="Ingrese su usuario" autocomplete="username">
+            </div>
+            
+            <div class="form-group">
+                <label for="adminPass">Contraseña:</label>
+                <input type="password" id="adminPass" placeholder="Ingrese su contraseña" autocomplete="current-password">
+            </div>
+            
+            <button class="btn-submit" onclick="loginAdmin()">Ingresar al Panel de Administración</button>
+            
+            <div style="text-align: center; margin-top: 25px; padding: 15px; background: #e9ecef; border-radius: 10px;">
+                <strong>📧 Contacto para soporte administrativo:</strong><br>
+                <span id="contactEmail">secretaria@institutonuestraseñoradelasmercedes.edu.ar</span><br>
+                <strong>📞 Teléfono:</strong> <span id="contactPhone">+54 351 1234567</span>
+            </div>
+        </div>
+
+        <!-- Panel de Administrador (Oculto inicialmente) -->
+        <div id="adminPanel" class="admin-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <button class="back-btn" onclick="logoutAdmin()">← Cerrar Sesión</button>
+                <h2>👨‍💼 Panel de Administración</h2>
+                <div style="font-weight: 600; color: #667eea;">
+                    Sesión: <span id="adminName">Administrador</span>
+                </div>
+            </div>
+
+            <div class="admin-menu">
+                <div class="menu-item" onclick="showAdminSection('dashboard')">
+                    <div>📊</div>
+                    <div>Dashboard</div>
+                </div>
+                <div class="menu-item" onclick="showAdminSection('inscriptions')">
+                    <div>📋</div>
+                    <div>Inscripciones</div>
+                </div>
+                <div class="menu-item" onclick="showAdminSection('teachers')">
+                    <div>👨‍🏫</div>
+                    <div>Profesores</div>
+                </div>
+                <div class="menu-item" onclick="showAdminSection('classrooms')">
+                    <div>🏫</div>
+                    <div>Aulas</div>
+                </div>
+                <div class="menu-item" onclick="showAdminSection('permissions')">
+                    <div>🎫</div>
+                    <div>Permisos</div>
+                </div>
+                <div class="menu-item" onclick="showAdminSection('config')">
+                    <div>⚙️</div>
+                    <div>Configuración</div>
+                </div>
+                <div class="menu-item" onclick="exportData()">
+                    <div>📤</div>
+                    <div>Exportar</div>
+                </div>
+                <div class="menu-item" onclick="showActivityLog()">
+                    <div>📝</div>
+                    <div>Registros</div>
+                </div>
+            </div>
+
+            <!-- Secciones del panel de admin -->
+            <div id="adminContent">
+                <!-- Dashboard -->
+                <div id="dashboardSection" class="admin-section">
+                    <h3>📊 Dashboard - Estadísticas Generales</h3>
+                    
+                    <div class="dashboard-stats">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalInscriptions">0</div>
+                            <div class="stat-label">Total Inscripciones</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalTeachers">0</div>
+                            <div class="stat-label">Total Profesores</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalClassrooms">0</div>
+                            <div class="stat-label">Total Aulas</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalStudents">0</div>
+                            <div class="stat-label">Estudiantes Únicos</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profesores -->
+                <div id="teachersSection" class="admin-section hidden">
+                    <h3>👨‍🏫 Gestión de Profesores</h3>
+                    
+                    <div class="alert info">
+                        <strong>ℹ️ Información:</strong> Aquí puedes gestionar todos los profesores del instituto. 
+                        Agrega, edita o elimina profesores según sea necesario.
+                    </div>
+                    
+                    <button class="btn-add" onclick="openTeacherModal()">
+                        ➕ Agregar Nuevo Profesor
+                    </button>
+                    
+                    <div class="search-bar">
+                        <input type="text" id="searchTeachers" placeholder="Buscar por nombre, materia o email..." onkeyup="filterTeachers()">
+                        <select id="filterTeacherCareer" onchange="filterTeachers()">
+                            <option value="all">Todas las Carreras</option>
+                            <option value="inicial">Educación Inicial</option>
+                            <option value="primaria">Educación Primaria</option>
+                        </select>
+                    </div>
+                    
+                    <div class="cards-grid" id="teachersGrid">
+                        <!-- Los profesores se cargarán aquí dinámicamente -->
+                    </div>
+                </div>
+
+                <!-- Aulas -->
+                <div id="classroomsSection" class="admin-section hidden">
+                    <h3>🏫 Gestión de Aulas</h3>
+                    
+                    <div class="alert info">
+                        <strong>ℹ️ Información:</strong> Aquí puedes gestionar todas las aulas del instituto. 
+                        Agrega, edita o elimina aulas según sea necesario.
+                    </div>
+                    
+                    <button class="btn-add" onclick="openClassroomModal()">
+                        ➕ Agregar Nueva Aula
+                    </button>
+                    
+                    <div class="search-bar">
+                        <input type="text" id="searchClassrooms" placeholder="Buscar por número, capacidad o tipo..." onkeyup="filterClassrooms()">
+                        <select id="filterClassroomType" onchange="filterClassrooms()">
+                            <option value="all">Todos los Tipos</option>
+                            <option value="normal">Aula Normal</option>
+                            <option value="lab">Laboratorio</option>
+                            <option value="taller">Taller</option>
+                            <option value="auditorio">Auditorio</option>
+                        </select>
+                    </div>
+                    
+                    <div class="cards-grid" id="classroomsGrid">
+                        <!-- Las aulas se cargarán aquí dinámicamente -->
+                    </div>
+                </div>
+
+                <!-- Inscripciones -->
+                <div id="inscriptionsSection" class="admin-section hidden">
+                    <h3>📋 Lista de Inscripciones</h3>
+                    
+                    <div class="search-bar">
+                        <input type="text" id="searchInscriptions" placeholder="Buscar por nombre, DNI o materia..." onkeyup="filterInscriptions()">
+                        <select id="filterStatus" onchange="filterInscriptions()">
+                            <option value="all">Todos los estados</option>
+                            <option value="pending">Pendientes</option>
+                            <option value="approved">Aprobadas</option>
+                            <option value="rejected">Rechazadas</option>
+                        </select>
+                    </div>
+                    
+                    <div style="overflow-x: auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Estudiante</th>
+                                    <th>DNI</th>
+                                    <th>Carrera</th>
+                                    <th>Materia</th>
+                                    <th>Modalidad</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inscriptionsTable">
+                                <tr>
+                                    <td colspan="8" style="text-align: center; padding: 30px;">
+                                        No hay inscripciones registradas aún.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Permisos -->
+                <div id="permissionsSection" class="admin-section hidden">
+                    <h3>🎫 Gestión de Permisos Especiales</h3>
+                    
+                    <div class="alert info">
+                        <strong>ℹ️ Información:</strong> Aquí puedes gestionar solicitudes de permisos especiales 
+                        para estudiantes que no tienen el mes anterior pagado.
+                    </div>
+                    
+                    <div style="overflow-x: auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Estudiante</th>
+                                    <th>Motivo</th>
+                                    <th>Comprobante</th>
+                                    <th>Fecha Solicitud</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="permissionsTable">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; padding: 30px;">
+                                        No hay solicitudes de permisos especiales.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Configuración -->
+                <div id="configSection" class="admin-section hidden">
+                    <h3>⚙️ Configuración del Sistema</h3>
+                    
+                    <div class="alert info">
+                        <strong>ℹ️ Información:</strong> Aquí puedes actualizar los datos de contacto y configuración del sistema.
+                    </div>
+                    
+                    <div class="config-section">
+                        <h4>📧 Datos de Contacto de Administración</h4>
+                        
+                        <div class="form-group">
+                            <label for="newEmail">Email de Secretaría:</label>
+                            <input type="email" id="newEmail" placeholder="ejemplo@instituto.edu.ar">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="newPhone">Teléfono de Contacto:</label>
+                            <input type="tel" id="newPhone" placeholder="+54 351 ...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="adminPasswordConfirm">Confirmar Contraseña de Administrador:</label>
+                            <input type="password" id="adminPasswordConfirm" placeholder="Ingrese su contraseña para confirmar cambios">
+                        </div>
+                        
+                        <button class="btn-submit" onclick="saveContactInfo()">💾 Guardar Cambios de Contacto</button>
+                    </div>
+                    
+                    <div class="contact-info" style="margin-top: 30px;">
+                        <h4>📞 Información de Contacto Actual</h4>
+                        <div class="contact-item">
+                            <div class="contact-icon">📧</div>
+                            <div>
+                                <strong>Email:</strong> <span id="displayEmail">secretaria@institutonuestraseñoradelasmercedes.edu.ar</span>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">📞</div>
+                            <div>
+                                <strong>Teléfono:</strong> <span id="displayPhone">+54 351 1234567</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de Estudiantes (Oculto inicialmente) -->
+        <div id="studentPanel" class="student-panel">
+            <button class="back-btn" onclick="hideAllPanels()">← Volver al inicio</button>
+            <h2>📝 Inscripción a Exámenes - Estudiantes</h2>
+            
+            <div class="alert">
+                <strong>⚠️ Importante:</strong> Debes inscribirte con al menos 48 horas de anticipación 
+                a la fecha del examen y tener el mes anterior pagado.
+            </div>
+
+            <form id="inscriptionForm">
+                <h3>👤 Datos Personales</h3>
+                <div class="form-group">
+                    <label for="fullName">Nombre Completo:</label>
+                    <input type="text" id="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label for="dni">DNI:</label>
+                    <input type="text" id="dni" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Teléfono/Celular:</label>
+                    <input type="tel" id="phone" required>
+                </div>
+
+                <h3 style="margin-top: 30px;">🎓 Carrera y Materia</h3>
+                <div class="form-group">
+                    <label for="career">Carrera:</label>
+                    <select id="career" required>
+                        <option value="">Seleccionar Carrera</option>
+                        <option value="inicial">Profesorado de Educación Inicial</option>
+                        <option value="primaria">Profesorado de Educación Primaria</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="year">Año:</label>
+                    <select id="year" required>
+                        <option value="">Seleccionar Año</option>
+                        <option value="1">1º Año</option>
+                        <option value="2">2º Año</option>
+                        <option value="3">3º Año</option>
+                        <option value="4">4º Año</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Materia a Rendir:</label>
+                    <select id="subject" required>
+                        <option value="">Seleccionar Materia</option>
+                        <option value="matematica">Matemática</option>
+                        <option value="lengua">Lengua y Literatura</option>
+                        <option value="historia">Historia</option>
+                        <option value="geografia">Geografía</option>
+                    </select>
+                </div>
+
+                <h3 style="margin-top: 30px;">📅 Modalidad y Fecha</h3>
+                <div class="form-group">
+                    <label for="modality">Modalidad de Rendición:</label>
+                    <select id="modality" required>
+                        <option value="">Seleccionar Modalidad</option>
+                        <option value="regular">Regular</option>
+                        <option value="libre">Libre</option>
+                        <option value="colloquium">Coloquio</option>
+                        <option value="equivalence">Equivalencia</option>
+                        <option value="promotion">Promoción</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="period">Período de Examen:</label>
+                    <select id="period" required>
+                        <option value="">Seleccionar Período</option>
+                        <option value="feb-mar">Febrero/Marzo</option>
+                        <option value="apr">Abril (Extraordinaria)</option>
+                        <option value="jul">Julio</option>
+                        <option value="sep">Septiembre (Extraordinaria)</option>
+                        <option value="nov-dec">Noviembre/Diciembre</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="examDate">Fecha Específica del Examen:</label>
+                    <input type="date" id="examDate" required>
+                </div>
+
+                <h3 style="margin-top: 30px;">💰 Pago de Cuota</h3>
+                <div class="alert">
+                    <strong>Requisito:</strong> Debes tener pagado el mes anterior a la fecha de examen para poder inscribirte.
+                </div>
+                <div class="form-group">
+                    <label for="paymentStatus">Estado de Pago:</label>
+                    <select id="paymentStatus" required>
+                        <option value="">Seleccionar Estado</option>
+                        <option value="paid">Tengo el mes anterior pagado</option>
+                        <option value="special">Necesito permiso especial (mes anterior no pagado)</option>
+                    </select>
+                </div>
+
+                <button type="button" class="btn-submit" onclick="submitInscription()">
+                    ✅ Inscribirme a esta Materia
+                </button>
+            </form>
+        </div>
+
+        <!-- Calendario de Exámenes -->
+        <div id="calendarPanel" class="student-panel">
+            <button class="back-btn" onclick="hideAllPanels()">← Volver al inicio</button>
+            <h2>📅 Calendario de Exámenes - Períodos Disponibles</h2>
+            
+            <div class="alert info">
+                <strong>ℹ️ Información:</strong> Consulta los períodos de examen disponibles para planificar tu inscripción.
+            </div>
+
+            <div class="dashboard-stats" style="margin-top: 30px;">
+                <div class="stat-card">
+                    <div style="font-size: 3em; margin-bottom: 10px;">📚</div>
+                    <div class="stat-label">Febrero/Marzo</div>
+                    <div style="font-weight: bold; color: #667eea;">1/2 - 15/3/2026</div>
+                </div>
+                <div class="stat-card">
+                    <div style="font-size: 3em; margin-bottom: 10px;">🌸</div>
+                    <div class="stat-label">Abril (Extraordinaria)</div>
+                    <div style="font-weight: bold; color: #667eea;">15-30/4/2026</div>
+                </div>
+                <div class="stat-card">
+                    <div style="font-size: 3em; margin-bottom: 10px;">☀️</div>
+                    <div class="stat-label">Julio</div>
+                    <div style="font-weight: bold; color: #667eea;">1-15/7/2026</div>
+                </div>
+                <div class="stat-card">
+                    <div style="font-size: 3em; margin-bottom: 10px;">🍂</div>
+                    <div class="stat-label">Septiembre (Extraordinaria)</div>
+                    <div style="font-weight: bold; color: #667eea;">15-30/9/2026</div>
+                </div>
+                <div class="stat-card">
+                    <div style="font-size: 3em; margin-bottom: 10px;">🎄</div>
+                    <div class="stat-label">Noviembre/Diciembre</div>
+                    <div style="font-weight: bold; color: #667eea;">15/11 - 15/12/2026</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para Profesores -->
+        <div id="teacherModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="teacherModalTitle">➕ Agregar Nuevo Profesor</h3>
+                    <button class="close-modal" onclick="closeTeacherModal()">×</button>
+                </div>
+                <form id="teacherForm">
+                    <input type="hidden" id="teacherId">
+                    <div class="form-group">
+                        <label for="teacherName">Nombre Completo:</label>
+                        <input type="text" id="teacherName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="teacherDni">DNI:</label>
+                        <input type="text" id="teacherDni" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="teacherEmail">Email:</label>
+                        <input type="email" id="teacherEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="teacherPhone">Teléfono:</label>
+                        <input type="tel" id="teacherPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="teacherCareer">Carrera:</label>
+                        <select id="teacherCareer" required>
+                            <option value="">Seleccionar Carrera</option>
+                            <option value="inicial">Profesorado de Educación Inicial</option>
+                            <option value="primaria">Profesorado de Educación Primaria</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="teacherSubject">Materia que Dicta:</label>
+                        <input type="text" id="teacherSubject" required placeholder="Ej: Matemática, Lengua, Historia">
+                    </div>
+                    <div class="form-group">
+                        <label for="teacherTitle">Título/Titulación:</label>
+                        <input type="text" id="teacherTitle" required placeholder="Ej: Profesor de Educación Inicial">
+                    </div>
+                    <button type="button" class="btn-submit" onclick="saveTeacher()">💾 Guardar Profesor</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal para Aulas -->
+        <div id="classroomModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="classroomModalTitle">➕ Agregar Nueva Aula</h3>
+                    <button class="close-modal" onclick="closeClassroomModal()">×</button>
+                </div>
+                <form id="classroomForm">
+                    <input type="hidden" id="classroomId">
+                    <div class="form-group">
+                        <label for="classroomNumber">Número/Nombre del Aula:</label>
+                        <input type="text" id="classroomNumber" required placeholder="Ej: Aula 101, Laboratorio 1">
+                    </div>
+                    <div class="form-group">
+                        <label for="classroomType">Tipo de Aula:</label>
+                        <select id="classroomType" required>
+                            <option value="">Seleccionar Tipo</option>
+                            <option value="normal">Aula Normal</option>
+                            <option value="lab">Laboratorio</option>
+                            <option value="taller">Taller</option>
+                            <option value="auditorio">Auditorio</option>
+                            <option value="computacion">Sala de Computación</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="classroomCapacity">Capacidad (número de estudiantes):</label>
+                        <input type="number" id="classroomCapacity" min="1" max="200" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="classroomFloor">Piso:</label>
+                        <select id="classroomFloor" required>
+                            <option value="">Seleccionar Piso</option>
+                            <option value="pb">Planta Baja</option>
+                            <option value="1">Primer Piso</option>
+                            <option value="2">Segundo Piso</option>
+                            <option value="3">Tercer Piso</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="classroomEquipment">Equipamiento (opcional):</label>
+                        <textarea id="classroomEquipment" rows="3" placeholder="Ej: Proyector, Pizarra digital, Computadoras"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="classroomStatus">Estado:</label>
+                        <select id="classroomStatus" required>
+                            <option value="disponible">Disponible</option>
+                            <option value="mantenimiento">En Mantenimiento</option>
+                            <option value="reservada">Reservada</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn-submit" onclick="saveClassroom()">💾 Guardar Aula</button>
+                </form>
+            </div>
+        </div>
+
+        <footer>
+            <p>Instituto Nuestra Señora de las Mercedes - Unquillo, Córdoba</p>
+            <p>© 2026 Todos los derechos reservados</p>
+        </footer>
+    </div>
+
+    <script>
+        // === CONFIGURACIÓN INICIAL ===
+        const ADMIN_CREDENTIALS = {
+            usuario: "admin",
+            password: "admin123"
+        };
+
+        // Cargar configuración desde localStorage o usar valores por defecto
+        let systemConfig = {
+            contactEmail: localStorage.getItem('adminContactEmail') || 'secretaria@institutonuestraseñoradelasmercedes.edu.ar',
+            contactPhone: localStorage.getItem('adminContactPhone') || '+54 351 1234567'
+        };
+
+        // Base de datos simulada (en producción usar backend)
+        let inscriptionsDB = JSON.parse(localStorage.getItem('inscriptions')) || [];
+        let activityLog = JSON.parse(localStorage.getItem('activityLog')) || [];
+        let permissionsDB = JSON.parse(localStorage.getItem('permissions')) || [];
+        let teachersDB = JSON.parse(localStorage.getItem('teachers')) || [
+            { id: 1, name: "Dra. María González", dni: "25.456.789", email: "mgonzalez@instituto.edu.ar", phone: "+54 351 5551234", career: "inicial", subject: "Psicología del Desarrollo", title: "Doctora en Psicología" },
+            { id: 2, name: "Prof. Juan Pérez", dni: "28.123.456", email: "jperez@instituto.edu.ar", phone: "+54 351 5552345", career: "primaria", subject: "Matemática", title: "Profesor de Matemática" },
+            { id: 3, name: "Lic. Ana Martínez", dni: "30.987.654", email: "amartinez@instituto.edu.ar", phone: "+54 351 5553456", career: "inicial", subject: "Literatura Infantil", title: "Licenciada en Educación" }
+        ];
+        let classroomsDB = JSON.parse(localStorage.getItem('classrooms')) || [
+            { id: 1, number: "Aula 101", type: "normal", capacity: 30, floor: "pb", equipment: "Pizarra, Proyector", status: "disponible" },
+            { id: 2, number: "Laboratorio 1", type: "lab", capacity: 25, floor: "1", equipment: "Computadoras, Proyector", status: "disponible" },
+            { id: 3, number: "Auditorio", type: "auditorio", capacity: 100, floor: "pb", equipment: "Sonido, Video Beam, Escenario", status: "disponible" }
+        ];
+
+        // Variables de sesión
+        let isAdminLoggedIn = false;
+        let editingTeacherId = null;
+        let editingClassroomId = null;
+
+        // === INICIALIZACIÓN ===
+        document.addEventListener('DOMContentLoaded', function() {
+            updateContactDisplay();
+            updateLoginContactInfo();
+            loadDashboardStats();
+        });
+
+        // === FUNCIONES DE NAVEGACIÓN ===
+        function showLogin(type) {
+            hideAllPanels();
+            document.getElementById('adminLogin').classList.add('active');
+        }
+
+        function showPanel(type) {
+            hideAllPanels();
+            if (type === 'student') {
+                document.getElementById('studentPanel').classList.add('active');
+            } else if (type === 'calendar') {
+                document.getElementById('calendarPanel').classList.add('active');
+            }
+        }
+
+        function hideAllPanels() {
+            document.querySelectorAll('.login-panel, .admin-panel, .student-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            closeTeacherModal();
+            closeClassroomModal();
+        }
+
+        // === AUTENTICACIÓN ===
+        function loginAdmin() {
+            const user = document.getElementById('adminUser').value.trim();
+            const pass = document.getElementById('adminPass').value.trim();
+
+            if (user === ADMIN_CREDENTIALS.usuario && pass === ADMIN_CREDENTIALS.password) {
+                isAdminLoggedIn = true;
+                document.getElementById('adminName').textContent = user;
+                hideAllPanels();
+                document.getElementById('adminPanel').classList.add('active');
+                showAdminSection('dashboard');
+                logActivity('Inicio de sesión de administrador');
+                alert('✅ ¡Acceso concedido! Bienvenido al panel de administración.');
+            } else {
+                alert('❌ Credenciales incorrectas. Por favor, verifique su usuario y contraseña.');
+            }
+        }
+
+        function logoutAdmin() {
+            if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+                logActivity('Cierre de sesión de administrador');
+                isAdminLoggedIn = false;
+                hideAllPanels();
+                alert('👋 Sesión cerrada correctamente.');
+            }
+        }
+
+        // === PANEL DE ADMINISTRACIÓN ===
+        function showAdminSection(section) {
+            document.querySelectorAll('.admin-section').forEach(sec => {
+                sec.classList.add('hidden');
+            });
+            
+            const sectionMap = {
+                'dashboard': 'dashboardSection',
+                'inscriptions': 'inscriptionsSection',
+                'teachers': 'teachersSection',
+                'classrooms': 'classroomsSection',
+                'permissions': 'permissionsSection',
+                'config': 'configSection'
+            };
+            
+            if (sectionMap[section]) {
+                document.getElementById(sectionMap[section]).classList.remove('hidden');
+                logActivity(`Accedió a sección: ${section}`);
+                
+                // Recargar datos si es necesario
+                if (section === 'teachers') {
+                    renderTeachers();
+                } else if (section === 'classrooms') {
+                    renderClassrooms();
+                } else if (section === 'inscriptions') {
+                    renderInscriptionsTable();
+                } else if (section === 'dashboard') {
+                    loadDashboardStats();
+                }
+            }
+        }
+
+        // === DASHBOARD ===
+        function loadDashboardStats() {
+            document.getElementById('totalInscriptions').textContent = inscriptionsDB.length;
+            document.getElementById('totalTeachers').textContent = teachersDB.length;
+            document.getElementById('totalClassrooms').textContent = classroomsDB.length;
+            document.getElementById('totalStudents').textContent = new Set(inscriptionsDB.map(i => i.dni)).size;
+        }
+
+        // === PROFESORES ===
+        function renderTeachers() {
+            const container = document.getElementById('teachersGrid');
+            container.innerHTML = '';
+            
+            if (teachersDB.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">No hay profesores registrados aún.</p>';
+                return;
+            }
+            
+            teachersDB.forEach(teacher => {
+                const card = document.createElement('div');
+                card.className = 'teacher-card';
+                card.innerHTML = `
+                    <h4>👨‍🏫 ${teacher.name}</h4>
+                    <p><strong>📌 DNI:</strong> ${teacher.dni}</p>
+                    <p><strong>📧 Email:</strong> ${teacher.email}</p>
+                    <p><strong>📞 Teléfono:</strong> ${teacher.phone}</p>
+                    <p><strong>🎓 Carrera:</strong> ${teacher.career === 'inicial' ? 'Educación Inicial' : 'Educación Primaria'}</p>
+                    <p><strong>📚 Materia:</strong> ${teacher.subject}</p>
+                    <p><strong>🎓 Título:</strong> ${teacher.title}</p>
+                    <div class="teacher-actions">
+                        <button class="action-btn btn-edit" onclick="editTeacher(${teacher.id})" title="Editar">✏️ Editar</button>
+                        <button class="action-btn btn-delete" onclick="deleteTeacher(${teacher.id})" title="Eliminar">🗑️ Eliminar</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterTeachers() {
+            const searchTerm = document.getElementById('searchTeachers').value.toLowerCase();
+            const careerFilter = document.getElementById('filterTeacherCareer').value;
+            
+            let filtered = [...teachersDB];
+            
+            if (searchTerm) {
+                filtered = filtered.filter(t => 
+                    t.name.toLowerCase().includes(searchTerm) ||
+                    t.subject.toLowerCase().includes(searchTerm) ||
+                    t.email.toLowerCase().includes(searchTerm) ||
+                    t.dni.includes(searchTerm)
+                );
+            }
+            
+            if (careerFilter !== 'all') {
+                filtered = filtered.filter(t => t.career === careerFilter);
+            }
+            
+            renderFilteredTeachers(filtered);
+        }
+
+        function renderFilteredTeachers(filtered) {
+            const container = document.getElementById('teachersGrid');
+            container.innerHTML = '';
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">No se encontraron profesores con los filtros aplicados.</p>';
+                return;
+            }
+            
+            filtered.forEach(teacher => {
+                const card = document.createElement('div');
+                card.className = 'teacher-card';
+                card.innerHTML = `
+                    <h4>👨‍🏫 ${teacher.name}</h4>
+                    <p><strong>📌 DNI:</strong> ${teacher.dni}</p>
+                    <p><strong>📧 Email:</strong> ${teacher.email}</p>
+                    <p><strong>📞 Teléfono:</strong> ${teacher.phone}</p>
+                    <p><strong>🎓 Carrera:</strong> ${teacher.career === 'inicial' ? 'Educación Inicial' : 'Educación Primaria'}</p>
+                    <p><strong>📚 Materia:</strong> ${teacher.subject}</p>
+                    <p><strong>🎓 Título:</strong> ${teacher.title}</p>
+                    <div class="teacher-actions">
+                        <button class="action-btn btn-edit" onclick="editTeacher(${teacher.id})" title="Editar">✏️ Editar</button>
+                        <button class="action-btn btn-delete" onclick="deleteTeacher(${teacher.id})" title="Eliminar">🗑️ Eliminar</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function openTeacherModal() {
+            editingTeacherId = null;
+            document.getElementById('teacherModalTitle').textContent = '➕ Agregar Nuevo Profesor';
+            document.getElementById('teacherForm').reset();
+            document.getElementById('teacherId').value = '';
+            document.getElementById('teacherModal').classList.add('active');
+        }
+
+        function closeTeacherModal() {
+            document.getElementById('teacherModal').classList.remove('active');
+        }
+
+        function editTeacher(id) {
+            const teacher = teachersDB.find(t => t.id === id);
+            if (!teacher) return;
+            
+            editingTeacherId = id;
+            document.getElementById('teacherModalTitle').textContent = '✏️ Editar Profesor';
+            document.getElementById('teacherId').value = teacher.id;
+            document.getElementById('teacherName').value = teacher.name;
+            document.getElementById('teacherDni').value = teacher.dni;
+            document.getElementById('teacherEmail').value = teacher.email;
+            document.getElementById('teacherPhone').value = teacher.phone;
+            document.getElementById('teacherCareer').value = teacher.career;
+            document.getElementById('teacherSubject').value = teacher.subject;
+            document.getElementById('teacherTitle').value = teacher.title;
+            
+            document.getElementById('teacherModal').classList.add('active');
+        }
+
+        function saveTeacher() {
+            const name = document.getElementById('teacherName').value.trim();
+            const dni = document.getElementById('teacherDni').value.trim();
+            const email = document.getElementById('teacherEmail').value.trim();
+            const phone = document.getElementById('teacherPhone').value.trim();
+            const career = document.getElementById('teacherCareer').value;
+            const subject = document.getElementById('teacherSubject').value.trim();
+            const title = document.getElementById('teacherTitle').value.trim();
+            
+            if (!name || !dni || !email || !phone || !career || !subject || !title) {
+                alert('❌ Por favor complete todos los campos obligatorios.');
+                return;
+            }
+            
+            if (editingTeacherId) {
+                // Editar profesor existente
+                const index = teachersDB.findIndex(t => t.id === editingTeacherId);
+                if (index !== -1) {
+                    const oldName = teachersDB[index].name;
+                    teachersDB[index] = { id: editingTeacherId, name, dni, email, phone, career, subject, title };
+                    logActivity(`Editó profesor: ${oldName} → ${name}`);
+                    alert('✅ Profesor actualizado correctamente.');
+                }
+            } else {
+                // Agregar nuevo profesor
+                const newId = teachersDB.length > 0 ? Math.max(...teachersDB.map(t => t.id)) + 1 : 1;
+                teachersDB.push({ id: newId, name, dni, email, phone, career, subject, title });
+                logActivity(`Agregó nuevo profesor: ${name}`);
+                alert('✅ Profesor agregado correctamente.');
+            }
+            
+            saveTeachers();
+            renderTeachers();
+            closeTeacherModal();
+        }
+
+        function deleteTeacher(id) {
+            const teacher = teachersDB.find(t => t.id === id);
+            if (!teacher) return;
+            
+            if (confirm(`¿Estás seguro de que deseas eliminar al profesor ${teacher.name}?`)) {
+                teachersDB = teachersDB.filter(t => t.id !== id);
+                saveTeachers();
+                renderTeachers();
+                logActivity(`Eliminó profesor: ${teacher.name}`);
+                alert('🗑️ Profesor eliminado correctamente.');
+            }
+        }
+
+        // === AULAS ===
+        function renderClassrooms() {
+            const container = document.getElementById('classroomsGrid');
+            container.innerHTML = '';
+            
+            if (classroomsDB.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">No hay aulas registradas aún.</p>';
+                return;
+            }
+            
+            classroomsDB.forEach(classroom => {
+                const card = document.createElement('div');
+                card.className = 'classroom-card';
+                card.innerHTML = `
+                    <h4>🏫 ${classroom.number}</h4>
+                    <p><strong>📍 Piso:</strong> ${getFloorLabel(classroom.floor)}</p>
+                    <p><strong>👥 Capacidad:</strong> ${classroom.capacity} estudiantes</p>
+                    <p><strong>🔧 Tipo:</strong> ${getClassroomTypeLabel(classroom.type)}</p>
+                    <p><strong>⚙️ Equipamiento:</strong> ${classroom.equipment || 'No especificado'}</p>
+                    <p><strong>📊 Estado:</strong> ${getClassroomStatusLabel(classroom.status)}</p>
+                    <div class="classroom-actions">
+                        <button class="action-btn btn-edit" onclick="editClassroom(${classroom.id})" title="Editar">✏️ Editar</button>
+                        <button class="action-btn btn-delete" onclick="deleteClassroom(${classroom.id})" title="Eliminar">🗑️ Eliminar</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterClassrooms() {
+            const searchTerm = document.getElementById('searchClassrooms').value.toLowerCase();
+            const typeFilter = document.getElementById('filterClassroomType').value;
+            
+            let filtered = [...classroomsDB];
+            
+            if (searchTerm) {
+                filtered = filtered.filter(c => 
+                    c.number.toLowerCase().includes(searchTerm) ||
+                    c.type.toLowerCase().includes(searchTerm) ||
+                    c.capacity.toString().includes(searchTerm) ||
+                    (c.equipment && c.equipment.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            if (typeFilter !== 'all') {
+                filtered = filtered.filter(c => c.type === typeFilter);
+            }
+            
+            renderFilteredClassrooms(filtered);
+        }
+
+        function renderFilteredClassrooms(filtered) {
+            const container = document.getElementById('classroomsGrid');
+            container.innerHTML = '';
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">No se encontraron aulas con los filtros aplicados.</p>';
+                return;
+            }
+            
+            filtered.forEach(classroom => {
+                const card = document.createElement('div');
+                card.className = 'classroom-card';
+                card.innerHTML = `
+                    <h4>🏫 ${classroom.number}</h4>
+                    <p><strong>📍 Piso:</strong> ${getFloorLabel(classroom.floor)}</p>
+                    <p><strong>👥 Capacidad:</strong> ${classroom.capacity} estudiantes</p>
+                    <p><strong>🔧 Tipo:</strong> ${getClassroomTypeLabel(classroom.type)}</p>
+                    <p><strong>⚙️ Equipamiento:</strong> ${classroom.equipment || 'No especificado'}</p>
+                    <p><strong>📊 Estado:</strong> ${getClassroomStatusLabel(classroom.status)}</p>
+                    <div class="classroom-actions">
+                        <button class="action-btn btn-edit" onclick="editClassroom(${classroom.id})" title="Editar">✏️ Editar</button>
+                        <button class="action-btn btn-delete" onclick="deleteClassroom(${classroom.id})" title="Eliminar">🗑️ Eliminar</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function openClassroomModal() {
+            editingClassroomId = null;
+            document.getElementById('classroomModalTitle').textContent = '➕ Agregar Nueva Aula';
+            document.getElementById('classroomForm').reset();
+            document.getElementById('classroomId').value = '';
+            document.getElementById('classroomModal').classList.add('active');
+        }
+
+        function closeClassroomModal() {
+            document.getElementById('classroomModal').classList.remove('active');
+        }
+
+        function editClassroom(id) {
+            const classroom = classroomsDB.find(c => c.id === id);
+            if (!classroom) return;
+            
+            editingClassroomId = id;
+            document.getElementById('classroomModalTitle').textContent = '✏️ Editar Aula';
+            document.getElementById('classroomId').value = classroom.id;
+            document.getElementById('classroomNumber').value = classroom.number;
+            document.getElementById('classroomType').value = classroom.type;
+            document.getElementById('classroomCapacity').value = classroom.capacity;
+            document.getElementById('classroomFloor').value = classroom.floor;
+            document.getElementById('classroomEquipment').value = classroom.equipment || '';
+            document.getElementById('classroomStatus').value = classroom.status;
+            
+            document.getElementById('classroomModal').classList.add('active');
+        }
+
+        function saveClassroom() {
+            const number = document.getElementById('classroomNumber').value.trim();
+            const type = document.getElementById('classroomType').value;
+            const capacity = parseInt(document.getElementById('classroomCapacity').value);
+            const floor = document.getElementById('classroomFloor').value;
+            const equipment = document.getElementById('classroomEquipment').value.trim();
+            const status = document.getElementById('classroomStatus').value;
+            
+            if (!number || !type || !capacity || !floor || !status) {
+                alert('❌ Por favor complete todos los campos obligatorios.');
+                return;
+            }
+            
+            if (capacity < 1 || capacity > 200) {
+                alert('❌ La capacidad debe estar entre 1 y 200 estudiantes.');
+                return;
+            }
+            
+            if (editingClassroomId) {
+                // Editar aula existente
+                const index = classroomsDB.findIndex(c => c.id === editingClassroomId);
+                if (index !== -1) {
+                    const oldNumber = classroomsDB[index].number;
+                    classroomsDB[index] = { id: editingClassroomId, number, type, capacity, floor, equipment, status };
+                    logActivity(`Editó aula: ${oldNumber} → ${number}`);
+                    alert('✅ Aula actualizada correctamente.');
+                }
+            } else {
+                // Agregar nueva aula
+                const newId = classroomsDB.length > 0 ? Math.max(...classroomsDB.map(c => c.id)) + 1 : 1;
+                classroomsDB.push({ id: newId, number, type, capacity, floor, equipment, status });
+                logActivity(`Agregó nueva aula: ${number}`);
+                alert('✅ Aula agregada correctamente.');
+            }
+            
+            saveClassrooms();
+            renderClassrooms();
+            closeClassroomModal();
+        }
+
+        function deleteClassroom(id) {
+            const classroom = classroomsDB.find(c => c.id === id);
+            if (!classroom) return;
+            
+            if (confirm(`¿Estás seguro de que deseas eliminar el ${classroom.number}?`)) {
+                classroomsDB = classroomsDB.filter(c => c.id !== id);
+                saveClassrooms();
+                renderClassrooms();
+                logActivity(`Eliminó aula: ${classroom.number}`);
+                alert('🗑️ Aula eliminada correctamente.');
+            }
+        }
+
+        // === FUNCIONES AUXILIARES ===
+        function getFloorLabel(floor) {
+            const labels = {
+                'pb': 'Planta Baja',
+                '1': 'Primer Piso',
+                '2': 'Segundo Piso',
+                '3': 'Tercer Piso'
+            };
+            return labels[floor] || floor;
+        }
+
+        function getClassroomTypeLabel(type) {
+            const labels = {
+                'normal': 'Aula Normal',
+                'lab': 'Laboratorio',
+                'taller': 'Taller',
+                'auditorio': 'Auditorio',
+                'computacion': 'Sala de Computación'
+            };
+            return labels[type] || type;
+        }
+
+        function getClassroomStatusLabel(status) {
+            const labels = {
+                'disponible': '<span style="color: #28a745; font-weight: bold;">✅ Disponible</span>',
+                'mantenimiento': '<span style="color: #ffc107; font-weight: bold;">🔧 En Mantenimiento</span>',
+                'reservada': '<span style="color: #17a2b8; font-weight: bold;">📅 Reservada</span>'
+            };
+            return labels[status] || status;
+        }
+
+        // === INSCRIPCIONES (versión simplificada) ===
+        function renderInscriptionsTable() {
+            if (inscriptionsDB.length === 0) {
+                document.getElementById('inscriptionsTable').innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 30px;">
+                            No hay inscripciones registradas aún.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            let html = '';
+            inscriptionsDB.forEach((ins, index) => {
+                const examDate = new Date(ins.examDate);
+                html += `
+                    <tr>
+                        <td>${examDate.toLocaleDateString('es-ES')}</td>
+                        <td>${ins.fullName}</td>
+                        <td>${ins.dni}</td>
+                        <td>${ins.career === 'inicial' ? 'Inicial' : 'Primaria'}</td>
+                        <td>${ins.subject}</td>
+                        <td>${ins.modality}</td>
+                        <td>${ins.status || 'pending'}</td>
+                        <td>
+                            <button class="action-btn btn-edit" title="Ver detalles">👁️</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            document.getElementById('inscriptionsTable').innerHTML = html;
+        }
+
+        function filterInscriptions() {
+            // Implementación simplificada
+            renderInscriptionsTable();
+        }
+
+        // === CONFIGURACIÓN ===
+        function updateContactDisplay() {
+            document.getElementById('displayEmail').textContent = systemConfig.contactEmail;
+            document.getElementById('displayPhone').textContent = systemConfig.contactPhone;
+            document.getElementById('newEmail').value = systemConfig.contactEmail;
+            document.getElementById('newPhone').value = systemConfig.contactPhone;
+        }
+
+        function updateLoginContactInfo() {
+            document.getElementById('contactEmail').textContent = systemConfig.contactEmail;
+            document.getElementById('contactPhone').textContent = systemConfig.contactPhone;
+        }
+
+        function saveContactInfo() {
+            const newEmail = document.getElementById('newEmail').value.trim();
+            const newPhone = document.getElementById('newPhone').value.trim();
+            const passwordConfirm = document.getElementById('adminPasswordConfirm').value.trim();
+
+            if (!newEmail || !newPhone) {
+                alert('❌ Por favor complete todos los campos de contacto.');
+                return;
+            }
+
+            if (!validateEmail(newEmail)) {
+                alert('❌ Por favor ingrese un email válido.');
+                return;
+            }
+
+            if (passwordConfirm !== ADMIN_CREDENTIALS.password) {
+                alert('❌ Contraseña incorrecta. No se pueden guardar los cambios.');
+                return;
+            }
+
+            systemConfig.contactEmail = newEmail;
+            systemConfig.contactPhone = newPhone;
+            
+            localStorage.setItem('adminContactEmail', newEmail);
+            localStorage.setItem('adminContactPhone', newPhone);
+
+            updateContactDisplay();
+            updateLoginContactInfo();
+
+            alert('✅ ¡Datos actualizados correctamente!');
+            logActivity('Actualizó información de contacto');
+
+            document.getElementById('adminPasswordConfirm').value = '';
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // === FUNCIONES DE ESTUDIANTES ===
+        function submitInscription() {
+            const requiredFields = ['fullName', 'dni', 'email', 'phone', 'career', 'year', 'subject', 'modality', 'period', 'examDate'];
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                if (!document.getElementById(field).value) {
+                    isValid = false;
+                }
+            });
+
+            if (!isValid) {
+                alert('❌ Por favor, complete todos los campos obligatorios.');
+                return;
+            }
+
+            const examDate = new Date(document.getElementById('examDate').value);
+            const now = new Date();
+            const diffHours = (examDate - now) / (1000 * 60 * 60);
+
+            if (diffHours < 48) {
+                alert('❌ Debes inscribirte con al menos 48 horas de anticipación a la fecha del examen.');
+                return;
+            }
+
+            const newInscription = {
+                id: Date.now(),
+                date: new Date().toISOString(),
+                fullName: document.getElementById('fullName').value,
+                dni: document.getElementById('dni').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                career: document.getElementById('career').value,
+                year: document.getElementById('year').value,
+                subject: document.getElementById('subject').value,
+                modality: document.getElementById('modality').value,
+                period: document.getElementById('period').value,
+                examDate: document.getElementById('examDate').value,
+                status: 'pending'
+            };
+
+            inscriptionsDB.push(newInscription);
+            saveInscriptions();
+            
+            logActivity(`Nueva inscripción de ${newInscription.fullName}`);
+
+            alert(`✅ ¡Inscripción realizada correctamente!\n\nRecibirás un correo de confirmación a: ${newInscription.email}`);
+            
+            document.getElementById('inscriptionForm').reset();
+            loadDashboardStats();
+        }
+
+        // === EXPORTACIÓN ===
+        function exportData() {
+            if (!isAdminLoggedIn) return;
+            
+            const options = prompt('¿Qué datos deseas exportar?\n1. Todas las inscripciones\n2. Profesores\n3. Aulas\n4. Actividad del sistema\n\nIngresa el número de tu elección:');
+            
+            let dataToExport = [];
+            let filename = '';
+            
+            switch(options) {
+                case '1':
+                    dataToExport = inscriptionsDB;
+                    filename = 'inscripciones_completas';
+                    break;
+                case '2':
+                    dataToExport = teachersDB;
+                    filename = 'profesores';
+                    break;
+                case '3':
+                    dataToExport = classroomsDB;
+                    filename = 'aulas';
+                    break;
+                case '4':
+                    dataToExport = activityLog;
+                    filename = 'registro_actividad';
+                    break;
+                default:
+                    alert('Opción no válida.');
+                    return;
+            }
+            
+            const csv = convertToCSV(dataToExport);
+            downloadCSV(csv, `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
+            
+            logActivity(`Exportó datos: ${filename}`);
+            alert(`✅ Datos exportados correctamente como ${filename}.csv`);
+        }
+
+        function convertToCSV(data) {
+            if (data.length === 0) return '';
+            
+            const headers = Object.keys(data[0]);
+            const csvRows = [];
+            
+            csvRows.push(headers.join(','));
+            
+            data.forEach(row => {
+                const values = headers.map(header => {
+                    const value = row[header] || '';
+                    return `"${value.toString().replace(/"/g, '""')}"`;
+                });
+                csvRows.push(values.join(','));
+            });
+            
+            return csvRows.join('\n');
+        }
+
+        function downloadCSV(csv, filename) {
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // === REGISTRO DE ACTIVIDAD ===
+        function showActivityLog() {
+            if (!isAdminLoggedIn) return;
+            
+            if (activityLog.length === 0) {
+                alert('No hay registros de actividad aún.');
+                return;
+            }
+            
+            let logHTML = '<div style="text-align: left; max-height: 60vh; overflow-y: auto;">';
+            activityLog.slice().reverse().forEach(entry => {
+                const date = new Date(entry.timestamp);
+                logHTML += `
+                    <div style="padding: 10px; margin-bottom: 10px; border-bottom: 1px solid #eee;">
+                        <strong>[${date.toLocaleTimeString('es-ES')}]</strong> ${entry.action}
+                    </div>
+                `;
+            });
+            logHTML += '</div>';
+            
+            alert(logHTML);
+            logActivity('Visualizó registro de actividad');
+        }
+
+        function logActivity(action) {
+            const entry = {
+                timestamp: new Date().toISOString(),
+                action: action
+            };
+            
+            activityLog.push(entry);
+            localStorage.setItem('activityLog', JSON.stringify(activityLog));
+        }
+
+        // === PERSISTENCIA ===
+        function saveTeachers() {
+            localStorage.setItem('teachers', JSON.stringify(teachersDB));
+        }
+
+        function saveClassrooms() {
+            localStorage.setItem('classrooms', JSON.stringify(classroomsDB));
+        }
+
+        function saveInscriptions() {
+            localStorage.setItem('inscriptions', JSON.stringify(inscriptionsDB));
+        }
+    </script>
+</body>
+</html>
